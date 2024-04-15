@@ -7,13 +7,13 @@ import Navbar from "./Navbar";
 const Header = ({ activeHeading }) => {
   const [active, setActive] = useState(false);
   
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 70) {
-      setActive(true);
-    } else {
-      setActive(false);
-    }
-  });
+  // window.addEventListener("scroll", () => {
+  //   if (window.scrollY > 70) {
+  //     setActive(true);
+  //   } else {
+  //     setActive(false);
+  //   }
+  // }, false);
   return (
     <>
       <div

@@ -6,36 +6,36 @@ import { toast } from "react-toastify";
 import axiosClient from "../../axiosClient";
 import Loader from "../Loader/Loader";
 
-
-
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [type, setType] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-
     axiosClient
       .post("user/register", {
         name,
-        phone,
+        type,
         email,
         password,
         password_confirmation: passwordConfirmation,
       })
       .then(({ data }) => {
         setIsLoading(false);
-        toast.success(`Registration Sucessful, You Proceed to OTP Verification`)
-        navigate("/otp-verification", { state: { userData: data } });
+        toast.success(
+          `Registration Sucessful, You Proceed to OTP Verification`
+        );
+
+        navigate("/login");
       })
       .catch((error) => {
         setIsLoading(false);
@@ -47,7 +47,6 @@ const Register = () => {
           );
 
           toast.error(`${finalErrors}`);
-          
         }
         console.error(error);
       });
@@ -55,9 +54,9 @@ const Register = () => {
 
   return (
     <>
-      <div className="min-h-screen flex  bg-gray-50 flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex  bg-gray-50 flex-col justify-center py-6 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-1 text-center text-3xl font-extrabold text-gray-900">
             Register
           </h2>
         </div>
@@ -105,26 +104,7 @@ const Register = () => {
                   />
                 </div>
               </div>
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Phone Number
-                </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    name="phone"
-                    id="phone"
-                    autoComplete="phone"
-                    value={phone}
-                    placeholder="e.g +23485577432"
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  />
-                </div>
-              </div>
+
               <div>
                 <label
                   htmlFor="password"
@@ -164,7 +144,7 @@ const Register = () => {
               </div>
               <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="cPassword"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Confirm Password
@@ -172,8 +152,8 @@ const Register = () => {
                 <div className="mt-1 relative">
                   <input
                     type={visible ? "text" : "password"}
-                    name="password"
-                    id="password"
+                    name="cPassword"
+                    id="cPassword"
                     autoComplete="current-password"
                     value={passwordConfirmation}
                     onChange={(e) => setPasswordConfirmation(e.target.value)}
@@ -199,6 +179,38 @@ const Register = () => {
                   )}
                 </div>
               </div>
+
+              <div>
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Register as:
+                </label>
+                <div className="mt-1 flex items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="admin"
+                    placeholder="e.g +23485577432"
+                    onChange={(e) => setType(e.target.value)}
+                    className=" px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none mr-1"
+                  />
+                  <span>Admin</span>
+                </div>
+                <div className="mt-1 flex items-center">
+                  <input
+                    type="radio"
+                    name="type"
+                    value="student"
+                    placeholder="e.g +23485577432"
+                    onChange={(e) => setType(e.target.value)}
+                    className=" px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none mr-1"
+                  />
+                  <span>Student</span>
+                </div>
+              </div>
+
               <div>
                 {!isLoading ? (
                   <button

@@ -26,11 +26,18 @@ const Login = () => {
         password,
       })
       .then(({ data }) => {
+        const { user, token } = data;
         setIsLoading(false);
-        setCurrentUser(data.user);
-        setUserToken(data.token);
+        setCurrentUser(user);
+        setUserToken(token);
+
         toast.success(`Login Successfully`);
-        navigate("/");
+        
+        if(user.type === 'student'){
+          console.log(user);
+          navigate("/exams-portal");
+        }
+        // navigate("/");
       })
       .catch((error) => {
         setIsLoading(false);
@@ -49,7 +56,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="min-h-screen flex  bg-gray-50 flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex  bg-gray-50 flex-col justify-center py-6 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Login
@@ -162,7 +169,7 @@ const Login = () => {
 
               <div className={`${styles.normalFlex} w-full`}>
                 <h4>Not have an account yet?</h4>
-                <Link to={"/sign-up"} className="text-blue-600 pl-2">
+                <Link to={"/register"} className="text-blue-600 pl-2">
                   Sign Up
                 </Link>
               </div>

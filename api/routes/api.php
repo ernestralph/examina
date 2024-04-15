@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ExamController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,5 +29,14 @@ Route::prefix('v1')->group(function () {
         // Route for user login
         Route::post('login', [UserController::class, 'login']);
         
+    });
+
+
+    // admin routes
+    Route::prefix('admin')->group(function (){
+        Route::middleware(['auth:sanctum'])->group(function(){
+            Route::get("get-subjects", [ExamController::class, 'getAllSubjects'] ); 
+            Route::post("create-question", [ExamController::class, 'storeQuestion'] ); 
+    });
     });
 });
