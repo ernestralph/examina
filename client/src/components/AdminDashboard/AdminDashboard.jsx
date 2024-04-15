@@ -13,9 +13,10 @@ const AdminDashboard = () => {
     "Option4",
   ]);
   const [subjects, setSubjects] = useState(null);
-  const [selectedSubjects, setSelectedSubjects] = useState(null);
+  const [selectedSubjects, setSelectedSubjects] = useState('');
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+  const [file, setFile] = useState(null);
 
   const { currentUser } = useStateContext();
 
@@ -26,17 +27,17 @@ const AdminDashboard = () => {
     });
   }, []);
 
-  const handleFormSubmit = (e)=>{
+  const handleFormSubmit = async (e)=>{
     e.preventDefault();
     setIsLoading(true);
     if (selectedSubjects.length < 1){
-      toast.warning("Select a subject pls");
+      toast.warning("Select a subject to continue...");
       setIsLoading(false)
       return;
     }
 
-    axiosClient
-      .post("admin/create-question", {
+    await axiosClient
+      .post("admin/upload-question", {
         selectedSubjects,
         question,
         options,
@@ -47,13 +48,46 @@ const AdminDashboard = () => {
         setOptions(["Option1", "Option2", "Option3", "Option4"]);
         setSelectedSubjects(null);
         setQuestion("");
-        setAnswer('');
+        setAnswer("");
         toast.success(`Successfully saved question`);
-      }).catch(()=>{
+      })
+      .catch(() => {
         setIsLoading(false);
         toast.error(`Incomplete operation, Kindly try again.`);
-
       });
+  }
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleUploadCSV = async (e)=>{
+        e.preventDefault()
+        setIsLoading(true)
+        try {
+          if (selectedSubjects.length < 1) {
+            toast.warning("Select a subject to continue...");
+            setIsLoading(false);
+            return;
+          }
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append("selectedSubjects", selectedSubjects);
+            const response = await axiosClient.post(
+              "/admin/questions/bulk-upload",
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            setIsLoading(true);
+            console.log(response.data);
+            setFile(null);
+        } catch (error) {
+            toast.error(error)
+        }
   }
 
   return (
@@ -163,6 +197,7 @@ const AdminDashboard = () => {
                 You can upload multiple questions in csv file to save time
               </span>
               <input
+                onChange={(e) => handleFileChange(e)}
                 accept=".csv"
                 className=" text-sm text-gray-900 border border-gray-100 rounded-lg cursor-pointer bg-gray-50  focus:outline-none dark:bg-gray-300 dark:border-gray-600 dark:placeholder-gray-400 mr-2"
                 aria-describedby="file"
@@ -171,6 +206,7 @@ const AdminDashboard = () => {
               />
 
               <button
+                onClick={(e) => handleUploadCSV(e)}
                 type="button"
                 className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-1 text-center dark:bg-gray-600 dark:hover:bg-gray-800 dark:focus:ring-blue-800 "
               >

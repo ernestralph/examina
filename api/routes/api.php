@@ -36,7 +36,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('admin')->group(function (){
         Route::middleware(['auth:sanctum'])->group(function(){
             Route::get("get-subjects", [ExamController::class, 'getAllSubjects'] ); 
-            Route::post("create-question", [ExamController::class, 'storeQuestion'] ); 
+            Route::post("upload-question", [ExamController::class, 'storeQuestion'] ); 
+            Route::post('questions/bulk-upload', [ExamController::class, 'bulkUploadQuestions']);
     });
     });
 });

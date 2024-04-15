@@ -30,6 +30,35 @@ class ExamController extends Controller
             ]);
         }
 
-        return  response(['message' => 'stored successfully!']);
+        return  response()->json(['message' => 'Question uploaded successfully'], 201);
     }
+
+    public function bulkUploadQuestions(Request $request){
+        if ($request->hasFile('file') && $request->file('file')->isValid()) {
+            $file = $request->file('file');
+            $questions = array_map('str_getcsv', file($file->path()));
+
+            foreach ($questions as $row) {
+                $question = Question::create([
+                    'question' => $row[0],
+                    'answer' => end($row),
+                    'created_by' => $request->user()->id,
+                    'subject_id' => $request->selectedSubjects,
+                ]);
+
+                // Create options for the question
+                $options = array_slice($row, 1, count($row) - 2);
+                foreach ($options as $option) {
+                    Option::create([
+                        'question_id' => $question->id,
+                        'option' => $option,
+                    ]);
+                }
+            }
+
+            return response()->json(['message' => 'Questions uploaded successfully'], 201);
+        } else {
+            return response()->json(['message' => 'No valid file uploaded'], 400);
+        }
+}
 }
