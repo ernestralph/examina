@@ -3,8 +3,10 @@ import { toast } from "react-toastify";
 import Loader from "../Loader/Loader";
 import { useStateContext } from "../../context/ContextProvider";
 import axiosClient from "../../axiosClient";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
+  const  navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([
     "Option1",
@@ -22,6 +24,9 @@ const AdminDashboard = () => {
 
 
   useEffect(() => {
+    if (currentUser.type === "student") {
+      return navigate("/exams-portal");
+    }
     axiosClient.get("admin/get-subjects").then((data) => {
       setSubjects(data.data);
     });
@@ -82,10 +87,10 @@ const AdminDashboard = () => {
                 },
               }
             );
-            setIsLoading(true);
-            console.log(response.data);
+            setIsLoading(false);
             setFile(null);
-        } catch (error) {
+          } catch (error) {
+            setIsLoading(false);
             toast.error(error)
         }
   }
@@ -94,8 +99,8 @@ const AdminDashboard = () => {
     <>
       {isLoading && <Loader />}
       <div className="w-full mb-40 px-[30px] sm:px-[40px] md:px-[55px] lg:px-[70px]">
-        <h6 className="py-3 px-2 text-gray-500 font-300 font-Poppins italic">
-          Dashboard / {currentUser.name}
+        <h6 className="py-3 px-2 text-gray-500 font-300 font-Poppins italic capitalize">
+          Dashboard / {currentUser?.name}
         </h6>
         <hr />
 

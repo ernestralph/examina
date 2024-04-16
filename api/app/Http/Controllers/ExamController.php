@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Subject;
 use App\Models\Question;
 use App\Models\Option;
+use App\Models\StudentScore;
+
+use App\Http\Resources\QuestionResource;
 
 class ExamController extends Controller
 {
@@ -33,7 +36,7 @@ class ExamController extends Controller
         return  response()->json(['message' => 'Question uploaded successfully'], 201);
     }
 
-    public function bulkUploadQuestions(Request $request){
+    public function bulkUploadQuestions(Request $request){  
         if ($request->hasFile('file') && $request->file('file')->isValid()) {
             $file = $request->file('file');
             $questions = array_map('str_getcsv', file($file->path()));
@@ -60,5 +63,26 @@ class ExamController extends Controller
         } else {
             return response()->json(['message' => 'No valid file uploaded'], 400);
         }
-}
+    }
+
+    public function getQuestionsBySubject(Request  $request, $subjectId){
+        $questions = Question::where(["subject_id" => $subjectId])->with("options");
+        
+        return QuestionResource::collection($questions->paginate(30));
+    }
+
+    public function storeScore(Request $request){
+        $student = $request->user()->id;
+        $results = $request->result;
+
+        foreach ($results as $result) {
+            StudentScore::create([
+                'subject_id' => $result['subject_id'],
+                'score' => $result['score'],
+                'student_id' => $student,
+            ]);
+        }
+
+        return response()->json(['message' => 'Test submitted successfully'], 201);
+    }
 }

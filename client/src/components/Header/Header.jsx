@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-import styles from "../../styles/styles";
-import { Link } from "react-router-dom";
-import { CgProfile } from "react-icons/cg";
 import Navbar from "./Navbar";
 
 const Header = ({ activeHeading }) => {

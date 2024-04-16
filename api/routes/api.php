@@ -38,6 +38,16 @@ Route::prefix('v1')->group(function () {
             Route::get("get-subjects", [ExamController::class, 'getAllSubjects'] ); 
             Route::post("upload-question", [ExamController::class, 'storeQuestion'] ); 
             Route::post('questions/bulk-upload', [ExamController::class, 'bulkUploadQuestions']);
+        });
     });
+
+    // student routes
+    Route::prefix('student')->group(function (){
+        Route::middleware(['auth:sanctum'])->group(function(){
+            Route::get("get-subjects", [ExamController::class, 'getAllSubjects'] ); 
+
+            Route::get('questions/{subjectId}', [ExamController::class, 'getQuestionsBySubject']);
+            Route::post('submit-core', [ExamController::class, 'storeScore']);
+        });
     });
 });

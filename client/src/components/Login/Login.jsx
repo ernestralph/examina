@@ -34,7 +34,6 @@ const Login = () => {
         toast.success(`Login Successfully`);
         
         if(user.type === 'student'){
-          console.log(user);
           navigate("/exams-portal");
         }
         // navigate("/");
@@ -56,7 +55,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="min-h-screen flex  bg-gray-50 flex-col justify-center py-6 sm:px-6 lg:px-8">
+      <div className=" flex  bg-gray-50 flex-col justify-center py-6 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Login
