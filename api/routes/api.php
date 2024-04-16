@@ -47,7 +47,10 @@ Route::prefix('v1')->group(function () {
             Route::get("get-subjects", [ExamController::class, 'getAllSubjects'] ); 
 
             Route::get('questions/{subjectId}', [ExamController::class, 'getQuestionsBySubject']);
-            Route::post('submit-core', [ExamController::class, 'storeScore']);
+
+            Route::post('submit-score', [ExamController::class, 'storeScore']);
+
+            Route::get('get-scores/{student_id}', [ExamController::class, 'getScores']);
         });
     });
 });

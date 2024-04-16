@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { GuestLayout, MainLayout } from "./components";
-import { Register, Login, AdminDashboard, ExamPortal } from "./pages";
+import { Register, Login, AdminDashboard, ExamPortal, Result } from "./pages";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "/exams-portal",
         element: <ExamPortal />,
+      },
+      {
+        path: "/results",
+        element: <Result />,
       },
     ],
   },

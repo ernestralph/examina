@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import Loader from "../Loader/Loader";
 import { useStateContext } from "../../context/ContextProvider";
 import axiosClient from "../../axiosClient";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ExamPortal = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const ExamPortal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isQuestionEnd, setIsQuestionEnd] = useState(false);
   const [isTestEnd, setIsTestEnd] = useState(false);
-  const [canChangeSubject, setCanChangeSubject] = useState(false);
+  const [canChangeSubject, setCanChangeSubject] = useState(true);
   const [subjects, setSubjects] = useState(null);
   const [completedSubjects, setCompletedSubjects] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -28,7 +28,7 @@ const ExamPortal = () => {
   const { currentUser } = useStateContext();
 
   useEffect(() => {
-    if (currentUser.type === 'admin') {
+    if (currentUser.type === "admin") {
       return navigate("/admin-dashboard");
     }
     axiosClient.get("student/get-subjects").then((data) => {
@@ -48,7 +48,7 @@ const ExamPortal = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [currentUser, setTime]);
 
   // Convert time remaining to minutes and seconds
   const minutes = Math.floor(time / 60);
@@ -81,7 +81,7 @@ const ExamPortal = () => {
           const { data } = d.data;
           setQuestions(shuffleArray(data));
           setOptions(shuffleArray(data[0]?.options));
-          setCanChangeSubject(true);
+          setCanChangeSubject(false);
           setCompletedSubjects((prevSubject) => [
             ...prevSubject,
             selectedSubjects,
@@ -108,7 +108,7 @@ const ExamPortal = () => {
       toast.info(
         `Completed ${name} test, Selected another subject to continue or submit test`
       );
-      setCanChangeSubject(false);
+      setCanChangeSubject(true);
       setIsQuestionEnd(true);
       setResult((prev) => [
         ...prev,
@@ -123,7 +123,7 @@ const ExamPortal = () => {
   const handleSubmit = ()=>{
     setIsLoading(true);
     axiosClient
-    .post(`student/submit-core`, {result})
+    .post(`student/submit-score`, {result})
     .then(() => {
       setCanChangeSubject(false);
       setIsLoading(false);
@@ -156,7 +156,7 @@ const ExamPortal = () => {
                   Select Subject:
                 </label>
                 <select
-                  disabled={canChangeSubject}
+                  disabled={!canChangeSubject}
                   id="subject"
                   className="block p-2.5 w-[95%] text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500  dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500 capitalize"
                   onChange={(e) => handleSelectSubject(e.target.value)}
@@ -237,9 +237,17 @@ const ExamPortal = () => {
                   Select a subject to start!
                 </h1>
               ) : (
-                <h1 className="text-6xl font-bold text-black dark:text-gray-800">
-                  Thank you for particapating in the test!
-                </h1>
+                <>
+                  <h1 className="text-6xl font-bold text-black dark:text-gray-800">
+                    Thank you for particapating in the test!
+                  </h1>
+                  <Link
+                    to={"/results"}
+                    className=" mt-4 text-white bg-blue-700 hover:border hover:border-blue-800 hover:bg-transparent hover:text-blue-800 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-blue-800 capitalize"
+                  >
+                    Check Result
+                  </Link>
+                </>
               )}
             </div>
           )}

@@ -9,6 +9,7 @@ use App\Models\Option;
 use App\Models\StudentScore;
 
 use App\Http\Resources\QuestionResource;
+use App\Http\Resources\ScoreResource;
 
 class ExamController extends Controller
 {
@@ -84,5 +85,10 @@ class ExamController extends Controller
         }
 
         return response()->json(['message' => 'Test submitted successfully'], 201);
+    }
+
+    public function getScores(Request $request, $student_id){
+       $scores = StudentScore::where(['student_id'=> $student_id])->get();
+       return ScoreResource::collection($scores);
     }
 }
