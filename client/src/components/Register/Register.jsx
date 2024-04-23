@@ -21,6 +21,12 @@ const Register = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    if (type === ''){
+      toast.warning("Select a user account type to continue...");
+      setIsLoading(false)
+      return;
+    }
+
     axiosClient
       .post("user/register", {
         name,
@@ -32,7 +38,7 @@ const Register = () => {
       .then(({ data }) => {
         setIsLoading(false);
         toast.success(
-          `Registration Sucessful, You Proceed to OTP Verification`
+          `Registration Sucessful!`
         );
 
         navigate("/login");

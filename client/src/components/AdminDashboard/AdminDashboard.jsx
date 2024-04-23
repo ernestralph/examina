@@ -35,7 +35,7 @@ const AdminDashboard = () => {
   const handleFormSubmit = async (e)=>{
     e.preventDefault();
     setIsLoading(true);
-    if (selectedSubjects.length < 1){
+    if (selectedSubjects?.length < 1){
       toast.warning("Select a subject to continue...");
       setIsLoading(false)
       return;
@@ -155,7 +155,7 @@ const AdminDashboard = () => {
                     htmlFor={`${index}`}
                     className="block mb-2 text-sm font-medium text-gray-900 "
                   >
-                    Enter {i}:
+                    Enter Option {index + 1}:
                   </label>
                   <input
                     id={`${index}`}
